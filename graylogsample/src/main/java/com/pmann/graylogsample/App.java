@@ -1,62 +1,44 @@
 package com.pmann.graylogsample;
 
 import java.io.IOException;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.util.EntityUtils;
-
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
-
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 /**
  * Hello world!
  *
  */
 public class App 
 {
-    public static void main( String[] args )
+	private static final Logger LOGGER = LogManager.getLogger(App.class);
+
+	public static void main( String[] args )
     {
-        System.out.println("Hello World!");
+		LOGGER.info("Starting Graylog sample app");
         
-        String json = "{ \"f1\":\"Hello\",\"f2\":{\"f3\":\"World\"}}";
-        JsonElement jsonTree = JsonParser.parseString(json);
-        
-        System.out.println(jsonTree.toString());
-        
+        //String json = "{ \"f1\":\"Hello\",\"f2\":{\"f3\":\"World\"}}";
+        //JsonElement jsonTree = JsonParser.parseString(json);      
+        //System.out.println(jsonTree.toString());
         
         try {
-            String result = sendPOST("http://192.168.122.219:12201/gelf");
-            System.out.println(result);
+        	HttpGelfClient httpGelfClient = HttpGelfClientBuilder.build(LOGGER, "http://192.168.122.219:12201/gelf");
+        	sendPost(httpGelfClient);
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+		LOGGER.info("Complete");
     }
     
-    private static String sendPOST(String url) throws IOException {
+    private static void sendPost(HttpGelfClient httpGelfClient) throws IOException {
+        StringBuilder gelfMsgBuilder = new StringBuilder();
+        gelfMsgBuilder.append("{");
+        gelfMsgBuilder.append("\"version\":\"1.1\",");
+        gelfMsgBuilder.append("\"short_message\":\"short_message\",");
+        gelfMsgBuilder.append("\"host\":\"host\"");
+        gelfMsgBuilder.append("}");
 
-        String result = "";
-        HttpPost post = new HttpPost(url);
-
-        StringBuilder json = new StringBuilder();
-        json.append("{");
-        json.append("\"version\":\"1.1\",");
-        json.append("\"short_message\":\"short_message\",");
-        json.append("\"host\":\"host\"");
-        json.append("}");
-
-        // send a JSON data
-        post.setEntity(new StringEntity(json.toString()));
-
-        try (CloseableHttpClient httpClient = HttpClients.createDefault();
-             CloseableHttpResponse response = httpClient.execute(post)){
-
-        	System.out.println(response.getStatusLine());
-            result = EntityUtils.toString(response.getEntity());
-        }
-
-        return result;
+        httpGelfClient.sendGelf(gelfMsgBuilder.toString());
     }
 }
