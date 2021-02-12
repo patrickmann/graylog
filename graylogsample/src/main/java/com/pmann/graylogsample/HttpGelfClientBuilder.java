@@ -1,12 +1,10 @@
 package com.pmann.graylogsample;
 
-import org.apache.logging.log4j.Logger;
-
 public class HttpGelfClientBuilder {
-	// Class cannot be instantiated
+	// Class only provides static methods - do not instantiate
 	private HttpGelfClientBuilder() {}
 	
-	public static HttpGelfClient build(Logger logger, String uri) {
-		return new HttpGelfClientImpl(logger, uri);
+	public static HttpGelfClient build(String uri) {
+		return new HttpGelfClientImpl(uri);
 	}
 }
