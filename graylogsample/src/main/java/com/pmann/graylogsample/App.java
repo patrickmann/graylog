@@ -7,6 +7,11 @@ import java.util.Properties;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+/**
+ * Command-line application: graylog technical interview sample
+ * @author pmann
+ *
+ */
 public class App {
 	private static final Logger LOGGER = LogManager.getLogger(App.class);
 
@@ -20,10 +25,10 @@ public class App {
 			LOGGER.error(e.getMessage());
 			System.exit(1);
 		}
+		LOGGER.info("Properties: {}", properties);
 		
-		try (GelfGenerator generator = new GelfGenerator(properties.getProperty("filename"), properties.getProperty("hostname"))) {
-			
-			HttpGelfClient httpGelfClient = HttpGelfClientBuilder.build(properties.getProperty("server.uri"));
+		try (GelfGenerator generator = new GelfGenerator(properties.getProperty("filename"), properties.getProperty("hostname"))) {		
+			GelfClient httpGelfClient = GelfClientBuilder.build(properties.getProperty("server.uri"));
 			while (generator.hasNext()) {
 				httpGelfClient.sendGelf(generator.next());				
 			}
