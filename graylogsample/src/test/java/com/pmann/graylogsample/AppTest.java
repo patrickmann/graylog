@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 
 class AppTest 
 {
-	// Successfully loads the properties from file
+	// Successfully loads some properties from file
     @Test
     void loadPropertiesSuccess() throws IOException
     {

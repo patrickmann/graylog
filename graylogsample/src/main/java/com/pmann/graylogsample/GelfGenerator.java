@@ -37,7 +37,7 @@ public class GelfGenerator implements AutoCloseable {
 	public static final String GELF_SHORT_MESSAGE = "short_message";
 
 	private String hostName;
-	private int counter = 1;
+	private int counter = 0;
 	private Scanner sc;
 
 	/**
@@ -85,7 +85,7 @@ public class GelfGenerator implements AutoCloseable {
 				objOut.addProperty(GELF_PREFIX + entry.getKey(), entry.getValue().getAsString());
 			}
 			
-			addRequiredFields(objOut, "message " + counter++);
+			addRequiredFields(objOut, "message " + ++counter);
 			LOGGER.debug(objOut.toString());
 			return objOut.toString();	
 		}
@@ -99,6 +99,7 @@ public class GelfGenerator implements AutoCloseable {
 	 */
 	@Override
 	public void close() {
+		LOGGER.info("Processed {} messages", counter);
 		if (sc != null) {
 			sc.close();
 		}

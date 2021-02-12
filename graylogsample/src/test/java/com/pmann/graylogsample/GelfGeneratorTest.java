@@ -17,7 +17,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 class GelfGeneratorTest {
-	// Successfully transforms a single input message to GELF format
+	// Successfully transforms a single valid input message to GELF format
 	@Test
 	void singleMsgFromInputStreamSuccess() throws IOException {
 		String input = "{\"field1\": \"value1\"}";
@@ -50,7 +50,7 @@ class GelfGeneratorTest {
 		}
 	}
 
-	// Successfully prepends "_" to output field names from a single input message
+	// Successfully prepends "_" to output field names
 	@Test
 	void singleMsgFieldSubstitutions() throws IOException {
 		try (GelfGenerator generator = new GelfGenerator(getResourcePath("messages-one.txt"), "test host")) {
@@ -99,6 +99,7 @@ class GelfGeneratorTest {
 		return (invalidFields == 0);
 	}
 
+	// Return true if given key is one of the reserved GELF field names
 	boolean isReservedGelfField(String key) {
 		return key.contentEquals(GelfGenerator.GELF_HOST) || key.contentEquals(GelfGenerator.GELF_VERSION)
 				|| key.contentEquals(GelfGenerator.GELF_SHORT_MESSAGE);
