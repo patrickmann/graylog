@@ -16,11 +16,11 @@ import com.google.gson.JsonParser;
 
 public class GelfGenerator implements AutoCloseable {
 	private static final Logger LOGGER = LogManager.getLogger(GelfGenerator.class);
-	private static final String GELF_PREFIX = "_";
-	private static final String GELF_VERSION = "version";
-	private static final String GELF_VERSION_VALUE = "1.1";
-	private static final String GELF_HOST = "host";
-	private static final String GELF_SHORT_MESSAGE = "short_message";
+	public static final String GELF_PREFIX = "_";
+	public static final String GELF_VERSION = "version";
+	public static final String GELF_VERSION_VALUE = "1.1";
+	public static final String GELF_HOST = "host";
+	public static final String GELF_SHORT_MESSAGE = "short_message";
 
 	private String hostName;
 	private int counter = 1;
@@ -47,8 +47,8 @@ public class GelfGenerator implements AutoCloseable {
 			}
 			
 			addRequiredFields(objOut, "message " + counter++);
-			return objOut.toString();
-			
+			LOGGER.debug(objOut.toString());
+			return objOut.toString();	
 		}
 		else {
 			throw new IOException("Called next() after last message");

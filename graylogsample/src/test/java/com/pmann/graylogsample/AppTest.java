@@ -1,20 +1,22 @@
 package com.pmann.graylogsample;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import org.junit.Test;
+import java.io.IOException;
+import java.util.Properties;
 
-/**
- * Unit test for simple App.
- */
-public class AppTest 
+import org.junit.jupiter.api.Test;
+
+class AppTest 
 {
-    /**
-     * Rigorous Test :-)
-     */
+	// Successfully loads the properties from file
     @Test
-    public void shouldAnswerWithTrue()
+    void loadPropertiesSuccess() throws IOException
     {
-        assertTrue( true );
+    	Properties properties = App.loadProperties();
+    	
+        assertNotNull(properties, "Could not populate properties");
+        assertFalse(properties.isEmpty(), "Properties initialized but 0 entries");
     }
 }

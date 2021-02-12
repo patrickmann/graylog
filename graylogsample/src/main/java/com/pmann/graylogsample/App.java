@@ -13,7 +13,14 @@ public class App {
 	public static void main(String[] args) {
 		LOGGER.info("Starting Graylog sample app");
 		
-		Properties properties = loadProperties(); 
+		Properties properties = null;
+		try {
+			properties = loadProperties();
+		} catch (IOException e) {
+			LOGGER.error(e.getMessage());
+			System.exit(1);
+		}
+		
 		try (GelfGenerator generator = new GelfGenerator(properties.getProperty("filename"), properties.getProperty("hostname"))) {
 			
 			HttpGelfClient httpGelfClient = HttpGelfClientBuilder.build(properties.getProperty("server.uri"));
@@ -28,7 +35,7 @@ public class App {
 	}
 
 	private static final String PROPFILE = "config.properties";
-	private static Properties loadProperties() {
+	public static Properties loadProperties() throws IOException {
         Properties properties = new Properties();
 	    try (InputStream input = App.class.getClassLoader().getResourceAsStream(PROPFILE)) {
 	        if (input == null) {
@@ -37,8 +44,6 @@ public class App {
 	        else {
 	        	properties.load(input);
 	        }
-		} catch (IOException e) {
-			LOGGER.error(e.getMessage());
 		}
 		return properties;
 	}
